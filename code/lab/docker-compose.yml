@@ -1,0 +1,31 @@
+
+services:
+
+  # Modern vulnerable web application
+  juice-shop:
+    image: bkimminich/juice-shop:latest
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - breach-lab
+    restart: unless-stopped
+
+
+  # Security assessment environment
+  scanner:
+    build:
+      context: ./scanner
+    command: ["sleep", "infinity"]
+    networks:
+      - breach-lab
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+# Isolated network for the laboratory
+networks:
+  breach-lab:
+    driver: bridge
+    # internal: true
